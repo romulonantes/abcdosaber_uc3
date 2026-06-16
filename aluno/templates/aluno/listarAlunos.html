@@ -1,0 +1,61 @@
+{% extends "base_template.html" %}
+
+{% block title %}
+    <title>ABC do Saber - Lista de Alunos</title>
+{% endblock %}
+
+{% block menu %}
+    <div class="collapse navbar-collapse justify-content-end" id="mynavbar">
+        <div class="navbar-nav">
+            <a href="/" class="nav-link">Início</a>
+            <a href="{% url 'cadastrar_aluno' %}" class="nav-link">Cadastrar</a>
+            <a href="{% url 'listar_alunos' %}" class="nav-link">Listar</a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block titulo_pagina %}
+    <div class="container text-center border-bottom border-primary bg-light">
+        <div class="row mt-5">
+            <div class="col">
+                <h1>Lista de Alunos</h1>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block corpo %}
+<main class="container m-2 mx-auto my-font-family">
+
+    <div class="table-responsive">
+
+        <table class="table table-borderless text-center w-100">
+
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Nome</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for aluno in alunos %}
+                    <tr>
+                        <td>{{ aluno.codigo }}</td>
+                        <td>{{ aluno.nome }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="2">Nenhum aluno cadastrado</td>
+                    </tr>
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</main>
+{% endblock %}

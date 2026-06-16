@@ -1,0 +1,63 @@
+{% extends "base_template.html" %}
+
+{% block title %}
+    <title>ABC do Saber - Cadastro de Alunos</title>
+{% endblock %}
+
+{% block menu %}
+    <div class="collapse navbar-collapse justify-content-end" id="mynavbar">
+        <div class="navbar-nav">
+            <a href="/" class="nav-link">Início</a>
+            <a href="{% url 'cadastrar_aluno' %}" class="nav-link">Cadastrar</a>
+            <a href="{% url 'listar_alunos' %}" class="nav-link">Listar</a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block titulo_pagina %}
+    <div class="container text-center border-bottom border-primary bg-light">
+        <div class="row mt-5">
+            <div class="col">
+                <h1>Cadastro de Alunos</h1>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block corpo %}
+    <main class="container m-2 w-75 mx-auto">
+        <form action="#" method="POST" name="frmCadastrarAluno" id="idFrmCadastrarAluno">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="idNome">Nome</label>
+                <input class="form-control"
+                       type="text"
+                       id="idNome"
+                       name="nome"
+                       placeholder="Informe o nome do aluno"
+                       required>
+            </div>
+
+            <div class="form-group">
+                <label for="idDataInicial">Data de Início na Escola</label>
+                <input class="form-control"
+                       type="date"
+                       id="idDataInicial"
+                       name="dataInicial"
+                       required>
+            </div>
+
+            <div class="form-group text-center">
+                <input type="reset"
+                       value="Limpar"
+                       class="btn btn-primary btn-md">
+
+                <input type="submit"
+                       value="Cadastrar"
+                       class="btn btn-primary btn-md"
+                       id="btnCadastrarAluno">
+            </div>
+        </form>
+    </main>
+{% endblock %}
