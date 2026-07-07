@@ -1,61 +1,310 @@
 {% extends "base_template.html" %}
 
 {% block title %}
-    <title>ABC do Saber - Lista de Alunos</title>
+<title>AbcDoSaber - Aluno</title>
 {% endblock %}
+
 
 {% block menu %}
-    <div class="collapse navbar-collapse justify-content-end" id="mynavbar">
-        <div class="navbar-nav">
-            <a href="/" class="nav-link">Início</a>
-            <a href="{% url 'cadastrar_aluno' %}" class="nav-link">Cadastrar</a>
-            <a href="{% url 'listar_alunos' %}" class="nav-link">Listar</a>
-        </div>
+
+<div class="collapse navbar-collapse justify-content-end" id="mynavbar">
+
+    <div class="navbar-nav">
+
+        <a href="/" class="nav-link">
+            Início
+        </a>
+
+        <a href="{% url 'cadastrar_aluno' %}" class="nav-link">
+            Cadastrar
+        </a>
+
+        <a href="{% url 'listar_alunos' %}" class="nav-link">
+            Listar
+        </a>
+
     </div>
+
+</div>
+
 {% endblock %}
+
+
 
 {% block titulo_pagina %}
-    <div class="container text-center border-bottom border-primary bg-light">
-        <div class="row mt-5">
-            <div class="col">
-                <h1>Lista de Alunos</h1>
-            </div>
-        </div>
-    </div>
 {% endblock %}
 
+
+
 {% block corpo %}
+
+
 <main class="container m-2 mx-auto my-font-family">
 
-    <div class="table-responsive">
 
-        <table class="table table-borderless text-center w-100">
+    <div class="row">
 
-            <thead>
-                <tr>
-                    <th>Código</th>
-                    <th>Nome</th>
-                </tr>
-            </thead>
+        <div class="col text-center m-0">
 
-            <tbody>
+            <h2 class="mt-2 mb-5 my-h2">
+                Lista de Alunos
+            </h2>
 
-                {% for aluno in alunos %}
-                    <tr>
-                        <td>{{ aluno.codigo }}</td>
-                        <td>{{ aluno.nome }}</td>
-                    </tr>
-                {% empty %}
-                    <tr>
-                        <td colspan="2">Nenhum aluno cadastrado</td>
-                    </tr>
-                {% endfor %}
-
-            </tbody>
-
-        </table>
+        </div>
 
     </div>
 
+
+
+
+{% if alunos %}
+
+
+<div class="table-responsive">
+
+
+<table class="table
+              table-borderless
+              text-center
+              my-table-hover
+              my-table-image
+              my-table-td-first-child
+              my-table-border-bottom
+              my-table-th
+              w-100">
+
+
+<thead>
+
+<tr>
+
+    <th>Código</th>
+
+    <th>Nome</th>
+
+    <th>Ações</th>
+
+</tr>
+
+
+</thead>
+
+
+
+<tbody>
+
+
+{% for aluno in alunos %}
+
+
+<tr>
+
+
+    <td>
+        {{ aluno.codigo }}
+    </td>
+
+
+    <td>
+        {{ aluno.nome }}
+    </td>
+
+
+
+    <td>
+
+
+        <a href="{% url 'editar_aluno' aluno.codigo %}"
+           class="btn btn-mini"
+           title="Editar">
+
+            <i class="far fa-edit"></i>
+
+        </a>
+
+
+
+        <button
+            type="button"
+            class="btn"
+            data-toggle="modal"
+            data-target="#modalExcluirAluno"
+            data-nome="{{ aluno.nome }}"
+            data-url="{% url 'excluir_aluno' aluno.codigo %}">
+
+            <i class="far fa-trash-alt"></i>
+
+        </button>
+
+
+    </td>
+
+
+</tr>
+
+
+{% endfor %}
+
+
+</tbody>
+
+
+</table>
+
+
+</div>
+
+
+{% else %}
+
+
+<div class="text-danger text-center">
+
+    <p>
+        Não há Alunos cadastrados.
+    </p>
+
+</div>
+
+
+{% endif %}
+
+
 </main>
+
+
+
+
+<!-- MODAL DE EXCLUSÃO -->
+
+<div class="modal fade"
+     id="modalExcluirAluno"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="modalLabel"
+     aria-hidden="true">
+
+
+    <div class="modal-dialog modal-dialog-centered">
+
+
+        <div class="modal-content">
+
+
+            <div class="modal-header">
+
+
+                <h5 class="modal-title">
+                    Confirmação
+                </h5>
+
+
+
+                <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal">
+
+                    &times;
+
+                </button>
+
+
+            </div>
+
+
+
+            <div class="modal-body">
+
+                <p id="mensagemExclusao"></p>
+
+            </div>
+
+
+
+
+            <div class="modal-footer">
+
+
+                <button
+                    type="button"
+                    class="btn btn-outline-dark"
+                    data-dismiss="modal">
+
+                    Cancelar
+
+                </button>
+
+
+
+                <button
+                    type="button"
+                    class="btn btn-primary"
+                    id="btnExcluir">
+
+                    Excluir
+
+                </button>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+{% endblock %}
+
+
+
+
+{% block javascript_complementar %}
+
+<script>
+
+
+let urlExcluir = "";
+
+
+
+$('#modalExcluirAluno').on('show.bs.modal', function(event){
+
+
+    const button = $(event.relatedTarget);
+
+
+    const nome = button.data('nome');
+
+
+    urlExcluir = button.data('url');
+
+
+
+    $('#mensagemExclusao').text(
+        'Deseja excluir o aluno "' + nome + '"?'
+    );
+
+
+});
+
+
+
+$('#btnExcluir').click(function(){
+
+
+    window.location.href = urlExcluir;
+
+
+});
+
+
+</script>
+
+
 {% endblock %}

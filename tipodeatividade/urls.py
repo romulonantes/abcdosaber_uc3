@@ -6,6 +6,6 @@ app_name = 'tipodeatividade'
 urlpatterns = [
     path('lista/', views.listar, name='listar'),
     path('cadastro/', views.cadastrar, name='cadastrar'),
+    path('carregar/<int:codigo>/', views.carregar, name='carregar_tipodeatividade'),
+    path('excluir/<int:codigo>/', views.excluir, name='excluir_tipodeatividade'),
 ]
-
-

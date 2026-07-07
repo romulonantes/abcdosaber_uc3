@@ -1,72 +1,208 @@
 {% extends "base_template.html" %}
 
 {% block title %}
-    <title>AbcDoSaber - Tipo de Atividade</title>
+<title>AbcDoSaber - Tipo de Atividade</title>
 {% endblock %}
 
 {% block menu %}
-    <div class="collapse navbar-collapse justify-content-end" id="mynavbar">
-        <div class="navbar-nav">
-            <a href="/" class="nav-link">Início</a>
-            <a href="{% url 'tipodeatividade:cadastrar' %}" class="nav-link">Cadastrar</a>
-            <a href="{% url 'tipodeatividade:listar' %}" class="nav-link">Listar</a>
-        </div>
+<div class="collapse navbar-collapse justify-content-end" id="mynavbar">
+    <div class="navbar-nav">
+        <a href="/" class="nav-link">Início</a>
+        <a href="{% url 'tipodeatividade:cadastrar' %}" class="nav-link">Cadastrar</a>
+        <a href="{% url 'tipodeatividade:listar' %}" class="nav-link">Listar</a>
     </div>
+</div>
 {% endblock %}
 
 {% block titulo_pagina %}
 {% endblock %}
 
 {% block corpo %}
-    <main class="container m-2 mx-auto my-font-family">
 
-        <div class="row">
-            <div class="col text-center m-0">
-                <h2 class="mt-2 mb-5 my-h2">Lista de Tipo de Atividade</h2>
-            </div>
+<main class="container m-2 mx-auto my-font-family">
+
+    <div class="row">
+        <div class="col text-center m-0">
+            <h2 class="mt-2 mb-5 my-h2">
+                Lista de Tipos de Atividade
+            </h2>
         </div>
+    </div>
 
-        {% if tiposdeatividade %} 
-        <!-- tabela responsiva -->
-        <div class="table-responsive">
+    {% if tiposdeatividade %}
 
-            <!-- classes para tabela (Bootstrap) , tabela sem borda, conteudo alinhado ao centro, ... , width: auto -->
-            <table class="table
-                        table-borderless
-                        text-center
-                        my-table-hover
-                        my-table-image
-                        my-table-td-first-child
-                        my-table-border-bottom
-                        my-table-th
-                        w-100">
+    <div class="table-responsive">
 
-                <!-- cabecalho -->
-                <thead>
-                    <!-- linhas -->
-                    <tr>
-                        <!-- colunas cabecalho -->
-                        <th>Código</th>
-                        <th>Descrição</th>
-                    </tr>
-                </thead>
+        <table class="table
+                      table-borderless
+                      text-center
+                      my-table-hover
+                      my-table-image
+                      my-table-td-first-child
+                      my-table-border-bottom
+                      my-table-th
+                      w-100">
 
-                <!-- linhas -->
-                {% for ta in tiposdeatividade %}              
+            <thead>
+
                 <tr>
-                    <td>{{ ta.codigo }} </td>
-                    <td>{{ ta.descricao }}</td>
+
+                    <th>Código</th>
+                    <th>Descrição</th>
+                    <th>Ações</th>
+
                 </tr>
-                {% endfor %}
 
-            </table>
+            </thead>
+
+            <tbody>
+
+            {% for ta in tiposdeatividade %}
+
+                <tr>
+
+                    <td>{{ ta.codigo }}</td>
+
+                    <td>{{ ta.descricao }}</td>
+
+                    <td>
+
+                        <a href="{% url 'tipodeatividade:carregar_tipodeatividade' ta.codigo %}"
+                           class="btn btn-mini"
+                           title="Editar">
+
+                            <i class="far fa-edit"></i>
+
+                        </a>
+
+                        <button
+                            type="button"
+                            class="btn"
+                            data-toggle="modal"
+                            data-target="#modalExcluirTipoAtividade"
+                            data-descricao="{{ ta.descricao }}"
+                            data-url="{% url 'tipodeatividade:excluir_tipodeatividade' ta.codigo %}">
+
+                            <i class="far fa-trash-alt"></i>
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    {% else %}
+
+    <div class="text-danger text-center">
+
+        <p>Não há Tipos de Atividade cadastrados.</p>
+
+    </div>
+
+    {% endif %}
+
+</main>
+
+<div class="modal fade"
+     id="modalExcluirTipoAtividade"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="modalLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+
+                    Confirmação
+
+                </h5>
+
+                <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal">
+
+                    &times;
+
+                </button>
+
+            </div>
+
+            <div class="modal-body">
+
+                <p id="mensagemExclusao"></p>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="btn btn-outline-dark"
+                    data-dismiss="modal">
+
+                    Cancelar
+
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn-primary"
+                    id="btnExcluir">
+
+                    Excluir
+
+                </button>
+
+            </div>
 
         </div>
-        {% else %}
-        <div class="text-danger text-center">
-            <p>Não há Tipos de atividade cadastros.</p>
-        </div>
-        {% endif %}
 
-    </main>
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block javascript_complementar %}
+
+<script>
+
+let urlExcluir = "";
+
+$('#modalExcluirTipoAtividade').on('show.bs.modal', function(event){
+
+    const button = $(event.relatedTarget);
+
+    const descricao = button.data('descricao');
+
+    urlExcluir = button.data('url');
+
+    $('#mensagemExclusao').text(
+        'Deseja excluir o tipo de atividade "' + descricao + '"?'
+    );
+
+});
+
+$('#btnExcluir').click(function(){
+
+    window.location.href = urlExcluir;
+
+});
+
+</script>
+
 {% endblock %}

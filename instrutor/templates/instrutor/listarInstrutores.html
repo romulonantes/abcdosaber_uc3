@@ -1,91 +1,215 @@
 {% extends "base_template.html" %}
 
 {% block title %}
-    <title>AbcDoSaber - Instrutor</title>
+<title>AbcDoSaber - Instrutor</title>
 {% endblock %}
 
 {% block menu %}
-    <div class="collapse navbar-collapse justify-content-end" id="mynavbar">
-        <div class="navbar-nav">
-            <a href="/" class="nav-link">Início</a>
-            <a href="{% url 'instrutor:cadastrar' %}" class="nav-link">Cadastrar</a>
-            <a href="{% url 'instrutor:listar' %}" class="nav-link">Listar</a>            
-        </div>
+<div class="collapse navbar-collapse justify-content-end" id="mynavbar">
+    <div class="navbar-nav">
+        <a href="/" class="nav-link">Início</a>
+        <a href="{% url 'instrutor:cadastrar' %}" class="nav-link">Cadastrar</a>
+        <a href="{% url 'instrutor:listar' %}" class="nav-link">Listar</a>
     </div>
+</div>
 {% endblock %}
 
 {% block titulo_pagina %}
 {% endblock %}
 
 {% block corpo %}
-    <main class="container m-2 mx-auto my-font-family">
 
-        <div class="row">
-            <div class="col text-center m-0">
-                <h2 class="mt-2 mb-5 my-h2">Lista de Instrutores</h2>
+<main class="container m-2 mx-auto my-font-family">
+
+    <div class="row">
+        <div class="col text-center m-0">
+            <h2 class="mt-2 mb-5 my-h2">Lista de Instrutores</h2>
+        </div>
+    </div>
+
+    {% if instrutores %}
+
+    <div class="table-responsive">
+
+        <table class="table
+                      table-borderless
+                      text-center
+                      my-table-hover
+                      my-table-image
+                      my-table-td-first-child
+                      my-table-border-bottom
+                      my-table-th
+                      w-100">
+
+            <thead>
+
+                <tr>
+                    <th>Id</th>
+                    <th>Nome</th>
+                    <th>RG</th>
+                    <th>Data Nascimento</th>
+                    <th>DDD</th>
+                    <th>Telefone</th>
+                    <th>Titularidade</th>
+                    <th>Ações</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+            {% for instrutor in instrutores %}
+
+                <tr>
+
+                    <td>{{ instrutor.id }}</td>
+
+                    <td>{{ instrutor.nome }}</td>
+
+                    <td>{{ instrutor.rg }}</td>
+
+                    <td>{{ instrutor.data_nascimento|date:"d/m/Y" }}</td>
+
+                    <td>{{ instrutor.ddd }}</td>
+
+                    <td>{{ instrutor.telefone }}</td>
+
+                    <td>{{ instrutor.codigo_titulo.descricao }}</td>
+
+                    <td>
+
+                        <a href="{% url 'instrutor:carregar_instrutor' instrutor.id %}"
+                           class="btn btn-mini"
+                           title="Editar">
+
+                            <i class="far fa-edit"></i>
+
+                        </a>
+
+                        <button
+                            type="button"
+                            class="btn"
+                            data-toggle="modal"
+                            data-target="#modalExcluirInstrutor"
+                            data-nome="{{ instrutor.nome }}"
+                            data-url="{% url 'instrutor:excluir_instrutor' instrutor.id %}">
+
+                            <i class="far fa-trash-alt"></i>
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    {% else %}
+
+    <div class="text-danger text-center">
+        <p>Não há Instrutores cadastrados.</p>
+    </div>
+
+    {% endif %}
+
+</main>
+
+<div class="modal fade"
+     id="modalExcluirInstrutor"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="modalLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+                    Confirmação
+                </h5>
+
+                <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal">
+
+                    &times;
+
+                </button>
+
             </div>
-        </div>
 
-        <!-- tabela responsiva -->
-        <div class="table-responsive">
+            <div class="modal-body">
 
-            <!-- classes para tabela (Bootstrap) , tabela sem borda, conteudo alinhado ao centro, ... , width: auto -->
-            <table class="table
-                        table-borderless
-                        text-center
-                        my-table-hover
-                        my-table-image
-                        my-table-td-first-child
-                        my-table-border-bottom
-                        my-table-th
-                        w-100">
+                <p id="mensagemExclusao"></p>
 
-                <!-- cabecalho -->
-                <thead>
-                    <!-- linhas -->
-                    <tr>
-                        <!-- colunas cabecalho -->
-                        <th>Id</th>
-                        <th>Nome</th>
-                        <th>RG</th>
-                        <th>Data Nascimento</th>
-                        <th>DDD</th>
-                        <th>Telefone</th>
-                        <th>Titularidade</th>
-                    </tr>
-                </thead>
+            </div>
 
-                <!-- linhas -->
-                <tr>
-                    <td> 1 </td>
-                    <td> Jefferson Gonçalves </td>
-                    <td> 099998888 </td>
-                    <td> 05/10/1978 </td>
-                    <td> 021 </td>
-                    <td> 897698512 </td>
-                    <td> Professor Doutor </td>
-                </tr>
-                <tr>
-                    <td> 2 </td>
-                    <td> Maria Joaquina </td>
-                    <td> 125487966 </td>
-                    <td> 10/01/1987 </td>
-                    <td> 021 </td>
-                    <td> 12322211 </td>
-                    <td> Professor Doutor </td>
-                </tr>
-                <tr>
-                    <td> 3 </td>
-                    <td> Juliana Fergusson </td>
-                    <td> 874895692 </td>
-                    <td> 15/11/1968 </td>
-                    <td> 022 </td>
-                    <td> 87474774 </td>
-                    <td> Professor Sabe-Tudo </td>
-                </tr>
-            </table>
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="btn btn-outline-dark"
+                    data-dismiss="modal">
+
+                    Cancelar
+
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn-primary"
+                    id="btnExcluir">
+
+                    Excluir
+
+                </button>
+
+            </div>
 
         </div>
 
-    </main>
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block javascript_complementar %}
+
+<script>
+
+let urlExcluir = "";
+
+$('#modalExcluirInstrutor').on('show.bs.modal', function(event){
+
+    const button = $(event.relatedTarget);
+
+    const nome = button.data('nome');
+
+    urlExcluir = button.data('url');
+
+    $('#mensagemExclusao').text(
+        'Deseja excluir o instrutor "' + nome + '"?'
+    );
+
+});
+
+$('#btnExcluir').click(function(){
+
+    window.location.href = urlExcluir;
+
+});
+
+</script>
+
 {% endblock %}

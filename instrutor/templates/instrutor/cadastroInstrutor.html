@@ -5,75 +5,175 @@
 {% endblock %}
 
 {% block menu %}
-    <div class="collapse navbar-collapse justify-content-end" id="mynavbar">
-        <div class="navbar-nav">
-            <a href="/" class="nav-link">Início</a>
-            <a href="{% url 'instrutor:cadastrar' %}" class="nav-link">Cadastrar</a>
-            <a href="{% url 'instrutor:listar' %}" class="nav-link">Listar</a>            
-        </div>
+<div class="collapse navbar-collapse justify-content-end" id="mynavbar">
+    <div class="navbar-nav">
+        <a href="/" class="nav-link">Início</a>
+        <a href="{% url 'instrutor:cadastrar' %}" class="nav-link">Cadastrar</a>
+        <a href="{% url 'instrutor:listar' %}" class="nav-link">Listar</a>
     </div>
+</div>
 {% endblock %}
 
 {% block titulo_pagina %}
 {% endblock %}
 
 {% block corpo %}
-    <main class="container m-2 w-75 mx-auto my-font-family">
 
-        <div class="row">
-            <div class="col text-center m-0">
-                <h2 class="mt-2 mb-5 my-h2">Cadastro de Instrutores</h2>
-            </div>
+<main class="container m-2 w-75 mx-auto my-font-family">
+
+    <div class="row">
+        <div class="col text-center m-0">
+            <h2 class="mt-2 mb-5 my-h2">
+                {% if instrutor %}
+                    Editar Instrutor
+                {% else %}
+                    Cadastro de Instrutores
+                {% endif %}
+            </h2>
+        </div>
+    </div>
+
+    <form name="frmCadastrarInstrutor" action="#" method="POST" class="my-label-color-purple">
+
+        {% csrf_token %}
+
+        <div class="form-group">
+
+            <label for="idNomeInstrutor">
+                Nome do Instrutor
+            </label>
+
+            <input
+                class="form-control"
+                type="text"
+                id="idNomeInstrutor"
+                name="nome"
+                maxlength="70"
+                placeholder="Informe o nome do instrutor"
+                value="{{ instrutor.nome|default:'' }}"
+                required>
+
         </div>
 
-        <!-- formulario HTML -->
-        <form name="frmCadastrarInstrutor" action="#" method="post" class="my-label-color-purple">
+        <div class="form-group">
 
-            <div class="form-group">
-                <label for="idNomeInstrutor" class="col-form-label">Nome do Instrutor</label>
-                <input class="form-control" type="text" id="idNomeInstrutor" name="nome"
-                    placeholder="Informe o nome do instrutor" maxlength="70" required>
-            </div>
+            <label for="idRg">
+                RG
+            </label>
 
-            <div class="form-group">
-                <label for='idRg'>RG</label>
-                <input class="form-control" type='text' id='idRg' name='rg' placeholder="Informe o RG" maxlength="45"
+            <input
+                class="form-control"
+                type="text"
+                id="idRg"
+                name="rg"
+                maxlength="15"
+                placeholder="Informe o RG"
+                value="{{ instrutor.rg|default:'' }}"
+                required>
+
+        </div>
+
+        <div class="form-group">
+
+            <label for="idDataNascimento">
+                Data de Nascimento
+            </label>
+
+            <input
+                class="form-control"
+                type="date"
+                id="idDataNascimento"
+                name="dataNascimento"
+                value="{{ instrutor.data_nascimento|date:'Y-m-d' }}"
+                required>
+
+        </div>
+
+        <div class="form-group row">
+
+            <div class="col-sm-6">
+
+                <label for="idDdd">
+                    DDD
+                </label>
+
+                <input
+                    class="form-control"
+                    type="text"
+                    id="idDdd"
+                    name="ddd"
+                    maxlength="3"
+                    value="{{ instrutor.ddd|default:'' }}"
                     required>
+
             </div>
 
-            <div class="form-group">
-                <label for='idDataNascimento'>Data de Nascimento</label>
-                <input class="form-control" type='date' id='idDataNascimento' name='dataNascimento' required>
+            <div class="col-sm-6">
+
+                <label for="idTelefone">
+                    Telefone
+                </label>
+
+                <input
+                    class="form-control"
+                    type="text"
+                    id="idTelefone"
+                    name="telefone"
+                    maxlength="9"
+                    value="{{ instrutor.telefone|default:'' }}"
+                    required>
+
             </div>
 
-            <div class="form-group row">
-                <div class="col-sm-6">
-                    <label for='idDdd'>DDD</label>
-                    <input class="form-control" type='ddd' id='idDataNascimento' name='ddd' maxlength="3" required>
-                </div>
-                <div class="col-sm-6">
-                    <label for='idTelefone'>Telefone</label>
-                    <input class="form-control" type='text' id='idTelefone' name='telefone' maxlength="9" required>
-                </div>
-            </div>
+        </div>
 
-            <div class="form-group">
-                <label for="idTitulo">Título do Professor</label>
-                <select class="form-control" id="idTitulo" name="codigoTitulo">
-                    <option value="0">Selecione...</option>
-                    <option value="1">Professor Doutor</option>
-                    <option value="2">Professor Sabe-Tudo</option>
-                    <option value="3">Professor Estagiário</option>
+        <div class="form-group">
 
-                </select>
-            </div>
+            <label for="idTitulo">
+                Título do Professor
+            </label>
 
-            <div class="form-group my-4 text-center">
-                <input type="reset" value="Limpar" class="btn btn-primary btn-md">
-                <input type="submit" value="Cadastrar" class="btn btn-primary btn-md">
-            </div>
+            <select
+                class="form-control"
+                id="idTitulo"
+                name="codigoTitulo">
 
-        </form>
+                <option value="0">Selecione...</option>
 
-    </main>
+                {% for titulo in titulos %}
+
+                    <option
+                        value="{{ titulo.codigo }}"
+                        {% if instrutor.codigo_titulo and instrutor.codigo_titulo.codigo == titulo.codigo %}
+                            selected
+                        {% endif %}>
+
+                        {{ titulo.descricao }}
+
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+        <div class="form-group my-4 text-center">
+
+            <input
+                type="reset"
+                value="Limpar"
+                class="btn btn-primary btn-md">
+
+            <input
+                type="submit"
+                value="{% if instrutor %}Salvar{% else %}Cadastrar{% endif %}"
+                class="btn btn-primary btn-md">
+
+        </div>
+
+    </form>
+
+</main>
+
 {% endblock %}
